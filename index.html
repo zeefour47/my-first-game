@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>LIFE DECISION – ภารกิจตัดสินใจ พิชิตชีวิต (ฉบับสมดุล)</title>
+  <style>
+    /* ==========================================================================
+       1. THEME VARIABLES & BASE RESET (โทนสีฟ้าอ่อน น้ำเงิน ขาว เหลือง)
+       ========================================================================== */
+    :root {
+      --bg-sky-light: #e0f2fe;
+      --bg-sky-soft: #f0f9ff;
+      --primary-blue: #0284c7;
+      --primary-dark: #0369a1;
+      --accent-yellow: #facc15;
+      --accent-yellow-dark: #eab308;
+      --surface-white: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --success-green: #16a34a;
+      --success-bg: #dcfce7;
+      --danger-red: #dc2626;
+      --danger-bg: #fee2e2;
+      --border-soft: #bae6fd;
+      --shadow-card: 0 12px 28px -6px rgba(2, 132, 199, 0.16);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Prompt', 'Sarabun', 'Noto Sans Thai', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #bae6fd 0%, #e0f2fe 45%, #fef9c3 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    /* ==========================================================================
+       2. DECORATIVE 2D CARTOON BACKGROUND ELEMENTS
+       ========================================================================== */
+    .bg-decorations {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 999px;
+      filter: blur(1px);
+      animation: floatCloud 25s linear infinite;
+    }
+    .cloud-1 { width: 180px; height: 54px; top: 8%; left: -20%; animation-duration: 32s; }
+    .cloud-2 { width: 140px; height: 42px; top: 22%; left: -15%; animation-duration: 24s; animation-delay: 5s; }
+    .cloud-3 { width: 210px; height: 60px; bottom: 12%; left: -25%; animation-duration: 38s; animation-delay: 2s; }
+
+    @keyframes floatCloud {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(135vw); }
+    }
+
+    /* ==========================================================================
+       3. MAIN APP CONTAINER & SCREEN MANAGEMENT
+       ========================================================================== */
+    .app-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 840px;
+      background: var(--surface-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      border: 3px solid var(--border-soft);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .screen {
+      display: none;
+      padding: 28px;
+      animation: fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ==========================================================================
+       4. HEADER & TOP BAR
+       ========================================================================== */
+    .top-navbar {
+      background: linear-gradient(90deg, var(--primary-blue), #0ea5e9);
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #0369a1;
+    }
+    .brand-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 0.3px;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1.5px solid rgba(255, 255, 255, 0.45);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       5. BUTTONS & INTERACTIVE ELEMENTS
+       ========================================================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px 26px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn-primary {
+      background: linear-gradient(180deg, var(--accent-yellow) 0%, var(--accent-yellow-dark) 100%);
+      color: #1e293b;
+      box-shadow: 0 4px 0 #ca8a04;
+      border: 2px solid #fef08a;
+    }
+    .btn-primary:hover {
+      filter: brightness(1.04);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: var(--bg-sky-soft);
+      color: var(--primary-dark);
+      border: 2px solid var(--border-soft);
+    }
+    .btn-secondary:hover {
+      background: #e0f2fe;
+    }
+    .btn-blue {
+      background: var(--primary-blue);
+      color: white;
+      box-shadow: 0 4px 0 var(--primary-dark);
+    }
+    .btn-blue:hover {
+      background: var(--primary-dark);
+    }
+
+    /* ==========================================================================
+       6. START SCREEN STYLES
+       ========================================================================== */
+    .hero-box {
+      text-align: center;
+      padding: 10px 0 16px;
+    }
+    .character-stage {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 12px;
+      background: radial-gradient(circle, #fef08a 0%, #e0f2fe 75%);
+      border-radius: 50%;
+      border: 4px solid var(--primary-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.2);
+      animation: bounceSlow 3s ease-in-out infinite;
+    }
+    @keyframes bounceSlow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .game-title {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .game-subtitle {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #d97706;
+      background: #fef3c7;
+      display: inline-block;
+      padding: 4px 16px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .stat-pill {
+      background: var(--bg-sky-soft);
+      border: 2px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 12px 10px;
+      text-align: center;
+    }
+    .stat-pill .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .stat-pill .value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-top: 2px;
+    }
+
+    .how-to-box {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .how-to-box h3 {
+      font-size: 1rem;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stage-badges {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .stage-tag {
+      background: white;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 8px;
+      font-size: 0.82rem;
+      text-align: center;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* ==========================================================================
+       7. GAMEPLAY SCREEN & CARD MECHANICS
+       ========================================================================== */
+    .hud-bar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-sky-soft);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border-soft);
+      margin-bottom: 14px;
+    }
+    .hud-item {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary-dark);
+    }
+    .hud-score {
+      text-align: right;
+      color: #b45309;
+      font-size: 1.05rem;
+    }
+    .timer-badge {
+      background: white;
+      border: 2.5px solid var(--primary-blue);
+      color: var(--primary-dark);
+      font-weight: 900;
+      font-size: 1.15rem;
+      padding: 6px 16px;
+      border-radius: 999px;
+      min-width: 96px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .timer-badge.warning {
+      border-color: var(--danger-red);
+      color: var(--danger-red);
+      background: var(--danger-bg);
+      animation: pulseWarn 0.6s infinite;
+    }
+    @keyframes pulseWarn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.07); }
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, #0284c7, #facc15);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    /* การ์ดสถานการณ์ (Scenario Card) */
+    .scenario-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+      border: 2.5px solid var(--primary-blue);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 18px rgba(2, 132, 199, 0.1);
+      position: relative;
+    }
+    .card-flip-anim {
+      animation: cardDeal 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes cardDeal {
+      0% { opacity: 0; transform: translateX(35px) rotate(2deg); }
+      100% { opacity: 1; transform: translateX(0) rotate(0deg); }
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .stage-pill {
+      background: var(--primary-blue);
+      color: white;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+    .location-pill {
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid #fde68a;
+    }
+
+    .scenario-header {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .scene-avatar {
+      flex-shrink: 0;
+      width: 72px;
+      height: 72px;
+      background: white;
+      border-radius: 18px;
+      border: 2px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.3rem;
+    }
+    .scenario-question {
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.55;
+      color: var(--text-main);
+    }
+
+    /* ตัวเลือกคำตอบ 4 ข้อ (ความยาวสมดุลกันทุกข้อ) */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: white;
+      border: 2.5px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 13px 16px;
+      font-family: inherit;
+      font-size: 0.98rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary-blue);
+      background: var(--bg-sky-soft);
+      transform: translateX(4px);
+    }
+    .option-btn:disabled {
+      cursor: default;
+    }
+    .option-prefix {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-sky-light);
+      color: var(--primary-dark);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--border-soft);
+    }
+    .option-btn.correct {
+      background: var(--success-bg);
+      border-color: var(--success-green);
+      color: #14532d;
+    }
+    .option-btn.correct .option-prefix {
+      background: var(--success-green);
+      color: white;
+      border-color: var(--success-green);
+    }
+    .option-btn.wrong {
+      background: var(--danger-bg);
+      border-color: var(--danger-red);
+      color: #7f1d1d;
+    }
+    .option-btn.wrong .option-prefix {
+      background: var(--danger-red);
+      color: white;
+      border-color: var(--danger-red);
+    }
+
+    /* กล่องแสดง Feedback ทันที */
+    .feedback-panel {
+      display: none;
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: var(--radius-md);
+      border: 2px solid;
+      animation: fadeInScale 0.3s ease;
+    }
+    .feedback-panel.show {
+      display: block;
+    }
+    .feedback-panel.is-correct {
+      background: #f0fdf4;
+      border-color: #86efac;
+      color: #14532d;
+    }
+    .feedback-panel.is-wrong {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #7f1d1d;
+    }
+    .feedback-title {
+      font-weight: 800;
+      font-size: 1.08rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .feedback-desc {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #1e293b;
+      margin-bottom: 14px;
+    }
+
+    /* ==========================================================================
+       8. SUMMARY & INDIVIDUAL LEARNING DASHBOARD
+       ========================================================================== */
+    .result-banner {
+      text-align: center;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #e0f2fe 0%, #fef9c3 100%);
+      border: 2.5px solid var(--border-soft);
+      margin-bottom: 20px;
+    }
+    .stars-row {
+      font-size: 2.2rem;
+      margin: 6px 0;
+      letter-spacing: 4px;
+    }
+    .score-big {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      line-height: 1.1;
+    }
+    .badge-reward {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 2px solid var(--accent-yellow-dark);
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      color: #92400e;
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(234, 179, 8, 0.2);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .dash-card {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .dash-card h4 {
+      font-size: 0.95rem;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+    .skill-bar-row {
+      margin-bottom: 10px;
+    }
+    .skill-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .skill-bar-bg {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      background: var(--primary-blue);
+      border-radius: 999px;
+      transition: width 0.6s ease;
+    }
+
+    .advice-box {
+      background: #fffbeb;
+      border: 2px solid #fde68a;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .advice-box h4 {
+      color: #92400e;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+    .advice-box p {
+      font-size: 0.94rem;
+      line-height: 1.55;
+      color: #451a03;
+    }
+
+    .review-list {
+      max-height: 220px;
+      overflow-y: auto;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      background: white;
+      margin-bottom: 20px;
+    }
+    .review-item {
+      padding: 10px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.9rem;
+    }
+    .review-item:last-child {
+      border-bottom: none;
+    }
+
+    /* ==========================================================================
+       9. RESPONSIVE DESIGN (MOBILE & TABLET)
+       ========================================================================== */
+    @media (max-width: 640px) {
+      body { padding: 8px; }
+      .screen { padding: 18px 14px; }
+      .game-title { font-size: 1.55rem; }
+      .stats-strip, .stage-badges, .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .scenario-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hud-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+      .timer-badge {
+        grid-column: span 2;
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ฉากหลังการ์ตูนก้อนเมฆลอย -->
+  <div class="bg-decorations" aria-hidden="true">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <main class="app-container">
+    <!-- แถบเมนูด้านบน -->
+    <header class="top-navbar">
+      <div class="brand-badge">
+        <span>🎓</span>
+        <span>LIFE DECISION</span>
+      </div>
+      <div class="nav-actions">
+        <button type="button" id="btnDashboardNav" class="icon-btn" title="ดูสถิติการเรียนรู้">
+          📊 สถิติของฉัน
+        </button>
+        <button type="button" id="btnSoundToggle" class="icon-btn" title="เปิด/ปิดเสียง">
+          🔊 เปิดเสียง
+        </button>
+      </div>
+    </header>
+
+    <!-- ========================================================================
+         SCREEN 1: หน้าต้อนรับ (START SCREEN)
+         ======================================================================== -->
+    <section id="screenStart" class="screen active">
+      <div class="hero-box">
+        <!-- ตัวละครนักเรียน ม.ปลาย 2D SVG -->
+        <div class="character-stage" aria-label="ตัวละครนักเรียนมัธยมปลาย">
+          <svg width="100" height="100" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="54" r="34" fill="#1e293b"/>
+            <path d="M28 112C28 92 42 82 60 82C78 82 92 92 92 112" fill="#ffffff" stroke="#0284c7" stroke-width="3"/>
+            <path d="M46 83L60 98L74 83" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.5"/>
+            <polygon points="60,89 54,104 60,109 66,104" fill="#0284c7"/>
+            <circle cx="60" cy="56" r="26" fill="#fed7aa"/>
+            <path d="M34 52C34 34 46 24 60 24C74 24 86 34 86 52C80 42 70 40 60 44C50 40 40 42 34 52Z" fill="#1e293b"/>
+            <circle cx="50" cy="57" r="3.5" fill="#0f172a"/>
+            <circle cx="70" cy="57" r="3.5" fill="#0f172a"/>
+            <circle cx="51" cy="56" r="1.2" fill="#ffffff"/>
+            <circle cx="71" cy="56" r="1.2" fill="#ffffff"/>
+            <ellipse cx="43" cy="63" rx="4" ry="2.5" fill="#fda4af" opacity="0.7"/>
+            <ellipse cx="77" cy="63" rx="4" ry="2.5" fill="#fda4af" opacity="0.7"/>
+            <path d="M53 66C56 70 64 70 67 66" stroke="#9a3412" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <h1 class="game-title">LIFE DECISION</h1>
+        <div class="game-subtitle">ภารกิจตัดสินใจ พิชิตชีวิต (ฉบับคิดวิเคราะห์สมดุล)</div>
+
+        <div class="stats-strip">
+          <div class="stat-pill">
+            <div class="label">🏆 คะแนนสูงสุด</div>
+            <div class="value" id="startHighScore">0 / 100</div>
+          </div>
+          <div class="stat-pill">
+            <div class="label">🪙 เหรียญทองสะสม</div>
+            <div class="value" id="startTotalCoins">0 เหรียญ</div>
+          </div>
+          <div class="stat-pill">
+            <div class="label">🎖️ ภารกิจที่พิชิต</div>
+            <div class="value" id="startWins">0 ครั้ง</div>
+          </div>
+        </div>
+
+        <div class="how-to-box">
+          <h3>📘 กติกาการเล่น: อ่านให้ครบ วิเคราะห์ให้ขาด!</h3>
+          <ul style="padding-left: 20px; font-size: 0.93rem; line-height: 1.6; color: var(--text-muted);">
+            <li>สุ่มการ์ดสถานการณ์จำลอง <strong>10 ข้อ</strong> (ข้อละ 10 คะแนน) ผ่านครบทั้ง 3 ด่าน</li>
+            <li>ตัวเลือกทั้ง <strong>4 ข้อ (ก - ง)</strong> มีความยาวและน้ำหนักใกล้เคียงกัน พร้อม <strong>สุ่มสลับตำแหน่งทุกครั้ง</strong></li>
+            <li>ตัดสินใจภายใน <strong>25 วินาที/ข้อ</strong> และทำคะแนนให้ได้ <strong>80 คะแนนขึ้นไป</strong> เพื่อพิชิตภารกิจ</li>
+          </ul>
+          <div class="stage-badges">
+            <div class="stage-tag">💰 ด่านที่ 1<br>บริหารเงินและเวลา</div>
+            <div class="stage-tag">💛 ด่านที่ 2<br>อารมณ์และความสัมพันธ์</div>
+            <div class="stage-tag">🧠 ด่านที่ 3<br>ตัดสินใจแก้ไขปัญหา</div>
+          </div>
+        </div>
+
+        <button type="button" id="btnStartGame" class="btn btn-primary" style="width: 100%; font-size: 1.2rem;">
+          🚀 เริ่มภารกิจตัดสินใจ!
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SCREEN 2: หน้าจอเล่นเกม (GAMEPLAY SCREEN)
+         ======================================================================== -->
+    <section id="screenGame" class="screen">
+      <div class="hud-bar">
+        <div class="hud-item">
+          🃏 การ์ดที่ <span id="hudQuestionNum">1</span> / 10
+        </div>
+        <div id="hudTimer" class="timer-badge">⏱️ 25 วิ</div>
+        <div class="hud-item hud-score">
+          ⭐ <span id="hudScore">0</span> คะแนน
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+
+      <article id="scenarioCard" class="scenario-card">
+        <div class="card-meta">
+          <span id="cardStageBadge" class="stage-pill">ด่านที่ 1: การบริหารเงินและเวลา</span>
+          <span id="cardLocationBadge" class="location-pill">📍 โรงอาหารโรงเรียน</span>
+        </div>
+
+        <div class="scenario-header">
+          <div id="cardIcon" class="scene-avatar">🍱</div>
+          <p id="cardQuestionText" class="scenario-question">
+            กำลังโหลดสถานการณ์...
+          </p>
+        </div>
+      </article>
+
+      <div id="optionsContainer" class="options-list"></div>
+
+      <div id="feedbackPanel" class="feedback-panel" role="status" aria-live="polite">
+        <div id="feedbackTitle" class="feedback-title"></div>
+        <p id="feedbackDesc" class="feedback-desc"></p>
+        <button type="button" id="btnNextQuestion" class="btn btn-blue" style="width: 100%;">
+          การ์ดถัดไป ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SCREEN 3: หน้าสรุปผลและ Dashboard รายบุคคล (SUMMARY & DASHBOARD)
+         ======================================================================== -->
+    <section id="screenResult" class="screen">
+      <div class="result-banner">
+        <div id="resultStatusTitle" style="font-size: 1.5rem; font-weight: 900; color: var(--primary-dark);">
+          🎉 ยินดีด้วย! คุณพิชิตภารกิจสำเร็จ
+        </div>
+        <div id="resultStars" class="stars-row">⭐⭐⭐</div>
+        <div class="score-big"><span id="resultScore">90</span> <span style="font-size: 1.2rem;">/ 100 คะแนน</span></div>
+        <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-muted); margin-top: 4px;">
+          ความแม่นยำ (Accuracy Rate): <span id="resultAccuracy" style="color: var(--primary-dark);">90%</span> | ได้รับ <span id="resultCoinsEarned" style="color: #b45309;">+90 เหรียญทอง</span>
+        </div>
+        <div id="resultBadge" class="badge-reward">
+          🏅 ตราประทับ: นักวางแผนชีวิตมือโปร
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dash-card">
+          <h4>📊 วิเคราะห์ทักษะรายด้าน (3 ด่าน)</h4>
+          <div id="skillBreakdownContainer"></div>
+        </div>
+
+        <div class="dash-card">
+          <h4>📈 สถิติสะสมทั้งหมดในเครื่อง</h4>
+          <ul style="list-style: none; font-size: 0.92rem; line-height: 1.9; color: var(--text-main);">
+            <li>🎮 จำนวนครั้งที่เล่น: <strong id="dashTotalGames">1</strong> ครั้ง</li>
+            <li>🏆 คะแนนสูงสุดตลอดกาล: <strong id="dashBestScore">90</strong> คะแนน</li>
+            <li>🪙 เหรียญทองสะสมรวม: <strong id="dashTotalCoins">90</strong> เหรียญ</li>
+            <li>✅ อัตราการผ่านเกณฑ์ (≥80): <strong id="dashWinRate">100%</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="advice-box">
+        <h4>💡 ข้อเสนอแนะเพื่อการพัฒนาตนเอง (Personalized Feedback)</h4>
+        <p id="personalAdviceText"></p>
+      </div>
+
+      <h4 style="font-size: 0.95rem; color: var(--primary-dark); margin-bottom: 8px;">📝 สรุปผลการตัดสินใจรายสถานการณ์</h4>
+      <div id="reviewListContainer" class="review-list"></div>
+
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button type="button" id="btnPlayAgain" class="btn btn-primary" style="flex: 1;">
+          🔄 เล่นอีกครั้ง (สุ่มการ์ดและสลับตัวเลือกใหม่)
+        </button>
+        <button type="button" id="btnBackHome" class="btn btn-secondary" style="flex: 1;">
+          🏠 กลับหน้าหลัก
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /**
+     * ============================================================================
+     * ส่วนที่ 1: คลังข้อสอบ 4 ตัวเลือก (ปรับความยาวและรายละเอียดทุกตัวเลือกให้สมดุลกัน)
+     * หมายเหตุ: ทุกตัวเลือกในแต่ละข้อถูกออกแบบให้มีความยาวใกล้เคียงกัน (Balanced Length)
+     * และมีเหตุผลรองรับชวนคิด เพื่อป้องกันการเดาคำตอบจากข้อที่ยาวที่สุด
+     * ============================================================================
+     */
+    const QUESTION_BANK = [
+      // --- ด่านที่ 1: การบริหารเงินและเวลา ---
+      {
+        id: 1,
+        stage: 1,
+        stageName: "ด่านที่ 1: การบริหารเงินและเวลา",
+        location: "📍 หอพัก / ห้องนอน",
+        icon: "⏰",
+        question: "พรุ่งนี้มีสอบย่อยตอนเช้าและต้องส่งงานกลุ่มตอนเที่ยง แต่คืนนี้เพื่อนชวนเล่นเกมเก็บแรงก์ 2 ชั่วโมง ขณะที่คุณยังอ่านหนังสือไม่จบอีก 2 บท คุณควรจัดการอย่างไร?",
+        options: [
+          {
+            text: "ขอตัวอ่านทบทวนบทเรียนและตรวจงานกลุ่มให้เสร็จเรียบร้อยก่อน แล้วค่อยเข้าไปเล่นกับเพื่อนไม่เกิน 30 นาทีก่อนเข้านอน",
+            isCorrect: true
+          },
+          {
+            text: "เข้าไปเล่นเกมเก็บแรงก์กับเพื่อนให้ครบ 2 ชั่วโมงเต็มก่อนเพื่อรักษาน้ำใจ แล้วค่อยตั้งปลุกตื่นมาอ่านสรุปตอนตี 4 ครึ่ง",
+            isCorrect: false
+          },
+          {
+            text: "เปิดเกมออนไลน์เล่นไปพร้อมกับเปิดคลิปติวสอบฟังคลอไปด้วย เพื่อประหยัดเวลาและทำกิจกรรมทั้งสองอย่างให้เสร็จพร้อมกัน",
+            isCorrect: false
+          },
+          {
+            text: "เลือกอ่านทบทวนเพียงบทเดียวที่ออกสอบเยอะ แล้วนำเวลาที่เหลือไปพักผ่อนและเล่นเกมกับเพื่อนเพื่อลดความเครียดก่อนสอบ",
+            isCorrect: false
+          }
+        ],
+        explanation: "หลักการ Eat That Frog (ทำเรื่องสำคัญและยากที่สุดก่อน) ร่วมกับการไม่ทำหลายอย่างพร้อมกัน (No Multitasking) ช่วยให้สมองโฟกัสกับเนื้อหาสอบได้เต็มที่ และยังเหลือเวลาให้รางวัลตัวเองอย่างมีขอบเขต"
+      },
+      {
+        id: 2,
+        stage: 1,
+        stageName: "ด่านที่ 1: การบริหารเงินและเวลา",
+        location: "📍 แอปช้อปปิ้งออนไลน์",
+        icon: "💸",
+        question: "คุณมีเงินสำรองฉุกเฉิน 1,500 บาท และเงินใช้จ่ายรายสัปดาห์ 800 บาท วันนี้หูฟังไร้สายรุ่นที่อยากได้ลดราคาเหลือ 1,290 บาท (ผ่อน 0% 3 เดือนได้) คุณควรตัดสินใจอย่างไร?",
+        options: [
+          {
+            text: "ใช้กฎรอ 24 ชั่วโมงเพื่อทบทวนความจำเป็น พร้อมคำนวณว่ายอดผ่อนเดือนละ 430 บาทจะกระทบเงินออมในอีก 3 เดือนข้างหน้าหรือไม่",
+            isCorrect: true
+          },
+          {
+            text: "กดสั่งซื้อแบบผ่อนชำระ 0% 3 เดือนทันที เพราะจ่ายเพียงเดือนละ 430 บาท ไม่ต้องใช้เงินก้อนใหญ่จึงไม่กระทบเงินเก็บที่มีอยู่",
+            isCorrect: false
+          },
+          {
+            text: "นำเงินสำรองฉุกเฉิน 1,500 บาทออกมาจ่ายสดให้เรียบร้อยในครั้งเดียว จะได้ไม่เกิดภาระหนี้ผูกพันในเดือนถัดไปและได้ของราคาถูก",
+            isCorrect: false
+          },
+          {
+            text: "กดสั่งซื้อในช่วงโปรโมชันลดราคาไว้ก่อน หากเดือนหน้าเงินค่าขนมไม่พอใช้ค่อยนำไปประกาศขายต่อมือสองในกลุ่มออนไลน์",
+            isCorrect: false
+          }
+        ],
+        explanation: "การผ่อน 0% ยังคงเป็นการก่อภาระผูกพันทางการเงินในอนาคต และเงินสำรองฉุกเฉิน (Emergency Fund) ไม่ควรถูกนำมาใช้กับสินค้าฟุ่มเฟือย การประเมินความจำเป็นและความสามารถในการจ่ายจริงคือกุญแจสำคัญ"
+      },
+      {
+        id: 3,
+        stage: 1,
+        stageName: "ด่านที่ 1: การบริหารเงินและเวลา",
+        location: "📍 ห้องสมุดโรงเรียน",
+        icon: "📅",
+        question: "เหลือเวลาอีก 4 สัปดาห์จะสอบ TGAT/TPAT แต่คุณยังมีงานโครงงานวิชาวิทยาศาสตร์และกิจกรรมซ้อมเชียร์กีฬาสีทับซ้อนกันอยู่ วิธีวางแผนใดมีประสิทธิภาพสูงสุด?",
+        options: [
+          {
+            text: "จัดตารางแยกความสำคัญ กำหนดเวลาอ่านหนังสือสอบทุกวันวันละ 1.5 ชั่วโมง ควบคู่กับแบ่งงานโครงงานให้คืบหน้าทีละสัปดาห์",
+            isCorrect: true
+          },
+          {
+            text: "ทุ่มเทเวลาทั้งหมดไปกับการซ้อมกีฬาสีและทำโครงงานให้เสร็จใน 2 สัปดาห์แรก แล้วค่อยอัดอ่านหนังสือวันละ 8 ชั่วโมงใน 2 สัปดาห์หลัง",
+            isCorrect: false
+          },
+          {
+            text: "จัดตารางอ่านหนังสือสอบเฉพาะวันเสาร์-อาทิตย์แบบเต็มวัน ส่วนวันจันทร์ถึงศุกร์ยกเวลาทั้งหมดให้กับกิจกรรมโรงเรียนและงานกลุ่ม",
+            isCorrect: false
+          },
+          {
+            text: "ขอลาหยุดซ้อมกีฬาสีทั้งหมดและขอเพื่อนในกลุ่มโครงงานลดหน้าที่ของตนเองลง เพื่อนำเวลาทั้งหมดมาใช้อ่านหนังสือสอบเพียงอย่างเดียว",
+            isCorrect: false
+          }
+        ],
+        explanation: "การเรียนรู้แบบกระจายเวลา (Spaced Repetition) วันละ 1-2 ชั่วโมงอย่างสม่ำเสมอ ให้ผลลัพธ์ด้านความจำระยะยาวดีกว่าการอัดอ่านแบบมาราธอน และยังช่วยรักษาสมดุลความรับผิดชอบต่อส่วนรวมได้"
+      },
+      {
+        id: 4,
+        stage: 1,
+        stageName: "ด่านที่ 1: การบริหารเงินและเวลา",
+        location: "📍 ร้านคาเฟ่หน้าโรงเรียน",
+        icon: "🧾",
+        question: "คุณทำบันทึกรายรับ-รายจ่ายพบว่า สิ้นเดือนไม่มีเงินเหลือเก็บเลย เพราะหมดไปกับค่าเครื่องดื่มแก้วละ 65-85 บาทและค่าส่งอาหารเดลิเวอรี คุณควรปรับแผนอย่างไร?",
+        options: [
+          {
+            text: "ตั้งงบค่าเครื่องดื่มไม่เกิน 15% ของค่าขนม พกกระบอกน้ำส่วนตัว และหักเงินออมทันที 20% ตั้งแต่วันแรกที่ได้รับเงินค่าขนม",
+            isCorrect: true
+          },
+          {
+            text: "งดซื้อเครื่องดื่มและขนมทุกชนิด 100% ทันทีตั้งแต่วันพรุ่งนี้ และลดมื้ออาหารเย็นลงเพื่อเร่งชดเชยเงินออมที่ขาดหายไป",
+            isCorrect: false
+          },
+          {
+            text: "นำสมุดบันทึกรายรับ-รายจ่ายไปปรึกษาผู้ปกครองเพื่อขอเพิ่มค่าขนมรายสัปดาห์ โดยชี้แจงเรื่องค่าครองชีพและราคาอาหารที่สูงขึ้น",
+            isCorrect: false
+          },
+          {
+            text: "เลือกซื้อเครื่องดื่มและสั่งอาหารผ่านแอปพลิเคชันตามปกติ แต่เน้นใช้โค้ดส่วนลดและโปรโมชันสะสมแต้มเพื่อช่วยประหยัดค่าใช้จ่าย",
+            isCorrect: false
+          }
+        ],
+        explanation: "การอุด 'รอยรั่วทางการเงิน (Latte Factor)' ด้วยการกำหนดเพดานงบประมาณที่ยืดหยุ่นและออมก่อนใช้ (Pay Yourself First) ทำได้ยั่งยืนกว่าการหักดิบจนเกิดความเครียดหรือการพึ่งพาเงินเพิ่มจากผู้อื่น"
+      },
+      {
+        id: 5,
+        stage: 1,
+        stageName: "ด่านที่ 1: การบริหารเงินและเวลา",
+        location: "📍 ป้ายรถประจำทางในเมือง",
+        icon: "🚌",
+        question: "คุณมีนัดสัมภาษณ์พอร์ตโฟลิโอเข้ามหาวิทยาลัยเวลา 09.00 น. แต่เกิดอุบัติเหตุรถชนบนเส้นทางหลักทำให้รถติดนิ่งสนิทตั้งแต่ 07.45 น. คุณควรแก้ไขสถานการณ์อย่างไร?",
+        options: [
+          {
+            text: "ตรวจสอบเส้นทางเลี่ยงหรือรถไฟฟ้าที่ใกล้ที่สุดทันที พร้อมโทรแจ้งเจ้าหน้าที่ฝ่ายรับสมัครของคณะให้ทราบสถานการณ์ล่วงหน้าอย่างสุภาพ",
+            isCorrect: true
+          },
+          {
+            text: "นั่งรออยู่บนรถประจำทางคันเดิมต่อไปอีกสักพัก เพราะคาดว่าเจ้าหน้าที่กู้ภัยน่าจะเคลียร์พื้นที่จราจรได้ทันเวลาก่อน 09.00 น.",
+            isCorrect: false
+          },
+          {
+            text: "รีบลงจากรถแล้วเดินลัดเลาะไปตามริมถนนใหญ่โดยไม่เสียเวลาดูแผนที่ เพื่อหวังว่าจะเดินทางไปถึงมหาวิทยาลัยได้เร็วกว่าการรอรถ",
+            isCorrect: false
+          },
+          {
+            text: "รอสังเกตสถานการณ์จนถึงเวลา 09.05 น. เมื่อแน่ใจว่าไปไม่ทันกำหนดแน่นอนแล้วจึงค่อยส่งอีเมลไปขอเลื่อนรอบการสัมภาษณ์",
+            isCorrect: false
+          }
+        ],
+        explanation: "เมื่อเผชิญเหตุสุดวิสัย การประเมินทางเลือกสำรองอย่างรวดเร็วควบคู่กับการสื่อสารเชิงรุก (Proactive Communication) ก่อนถึงเวลานัดหมาย แสดงถึงวุฒิภาวะและการแก้ปัญหาอย่างมืออาชีพ"
+      },
+
+      // --- ด่านที่ 2: การจัดการอารมณ์และความสัมพันธ์ ---
+      {
+        id: 6,
+        stage: 2,
+        stageName: "ด่านที่ 2: การจัดการอารมณ์และความสัมพันธ์",
+        location: "📍 ห้องเรียน ม.6",
+        icon: "😤",
+        question: "ระหว่างประชุมกลุ่ม เพื่อนคนหนึ่งพูดแทรกกลางคันว่า 'ไอเดียของเธอมันดูเด็กไป ไม่น่าจะผ่านเกณฑ์ครูหรอก' ต่อหน้าเพื่อนอีก 4 คน คุณรู้สึกโกรธมาก คุณควรตอบสนองอย่างไร?",
+        options: [
+          {
+            text: "สูดหายใจลึก 3 วินาที แยกอารมณ์ออกจากงาน แล้วถามกลับอย่างสงบว่า 'ในมุมมองของเธอ คิดว่าต้องปรับเพิ่มประเด็นไหนให้ตรงเกณฑ์บ้าง'",
+            isCorrect: true
+          },
+          {
+            text: "เลือกที่จะนิ่งเงียบไม่แสดงความคิดเห็นเพิ่มเติมอีกตลอดทั้งคาบเรียน และปล่อยให้เพื่อนคนนั้นรับผิดชอบคิดโครงงานทั้งหมดคนเดียว",
+            isCorrect: false
+          },
+          {
+            text: "ตอบกลับด้วยน้ำเสียงจริงจังทันทีว่า 'งั้นขอฟังไอเดียที่สมบูรณ์แบบของเธอหน่อยสิ ว่าจะตรงตามเกณฑ์การให้คะแนนของครูมากแค่ไหน'",
+            isCorrect: false
+          },
+          {
+            text: "รีบกล่าวขอโทษเพื่อนในกลุ่มทันทีและยอมยกเลิกไอเดียของตนเองทั้งหมดโดยไม่ซักถามเหตุผล เพื่อไม่ให้บรรยากาศการทำงานตึงเครียด",
+            isCorrect: false
+          }
+        ],
+        explanation: "การตอบสนองเชิงสร้างสรรค์ (Constructive Response) ช่วยดึงบทสนทนากลับสู่เป้าหมายของงาน โดยไม่ใช้อารมณ์ปะทะและไม่ยอมจำนนจนเสียความมั่นใจในตนเอง"
+      },
+      {
+        id: 7,
+        stage: 2,
+        stageName: "ด่านที่ 2: การจัดการอารมณ์และความสัมพันธ์",
+        location: "📍 งานเลี้ยงฉลองหลังสอบเสร็จ",
+        icon: "🥤",
+        question: "ในงานปาร์ตี้บ้านเพื่อน รุ่นพี่ที่สนิทกันยื่นเครื่องดื่มแอลกอฮอล์ให้พร้อมพูดว่า 'สอบเสร็จแล้ว ดื่มแก้วเดียวไม่เป็นไรหรอก อย่าทำตัวเป็นเด็กอนามัยเลย' คุณจะปฏิเสธอย่างไร?",
+        options: [
+          {
+            text: "ยิ้มและตอบอย่างมั่นคงว่า 'ขอบคุณครับพี่ แต่วันนี้ผมต้องขับรถกลับบ้าน ขอเป็นน้ำอัดลมแทนดีกว่า เดี๋ยวผมช่วยดูแลเรื่องอาหารให้นะครับ'",
+            isCorrect: true
+          },
+          {
+            text: "รับแก้วเครื่องดื่มมาถือไว้ตามมารยาทเพื่อไม่ให้รุ่นพี่เสียหน้า แล้วค่อยหาจังหวะแอบนำไปเททิ้งในห้องน้ำตอนที่ทุกคนเผลอ",
+            isCorrect: false
+          },
+          {
+            text: "ปฏิเสธเสียงแข็งพร้อมอธิบายเรื่องโทษของแอลกอฮอล์ต่อระบบประสาทและข้อกฎหมายอายุผู้ดื่มให้รุ่นพี่ฟังอย่างละเอียดกลางวงสนทนา",
+            isCorrect: false
+          },
+          {
+            text: "ยอมจิบเครื่องดื่มไปเล็กน้อยเพื่อให้รุ่นพี่เห็นว่าเราเข้ากับทุกคนได้ แล้วค่อยหาเหตุผลส่วนตัวขอตัวกลับบ้านก่อนเวลาเลิกงาน",
+            isCorrect: false
+          }
+        ],
+        explanation: "เทคนิค Broken Record & Redirect ในการปฏิเสธเชิงบวก คือการยืนยันจุดยืนอย่างสุภาพ หนักแน่น และเบี่ยงเบนความสนใจไปสู่กิจกรรมอื่นที่สร้างสรรค์โดยไม่ตัดสินผู้อื่น"
+      },
+      {
+        id: 8,
+        stage: 2,
+        stageName: "ด่านที่ 2: การจัดการอารมณ์และความสัมพันธ์",
+        location: "📍 แชทกลุ่มและโซเชียลมีเดีย",
+        icon: "💬",
+        question: "เพื่อนสนิทเข้าใจผิดคิดว่าคุณนำความลับของเขาไปเล่าให้คนอื่นฟัง จึงโพสต์ข้อความเหน็บแนมในสตอรี่และไม่ตอบแชทคุณ คุณควรจัดการความสัมพันธ์นี้อย่างไร?",
+        options: [
+          {
+            text: "รอให้อารมณ์ทั้งสองฝ่ายเย็นลงสักพัก แล้วส่งข้อความสั้น ๆ อย่างจริงใจขอโทรคุยหรือนัดพบตัวต่อตัวเพื่อรับฟังและชี้แจงข้อเท็จจริง",
+            isCorrect: true
+          },
+          {
+            text: "โพสต์สตอรี่ชี้แจงความบริสุทธิ์ของตนเองพร้อมแคปหน้าจอแชทหลักฐานทั้งหมดลงโซเชียลเพื่อให้เพื่อนคนอื่นในห้องช่วยกันตัดสิน",
+            isCorrect: false
+          },
+          {
+            text: "ส่งข้อความยาวเหยียดอธิบายเหตุผลรัว ๆ ในแชทส่วนตัวทันที และตามไปคอมเมนต์ใต้โพสต์ของเพื่อนจนกว่าเพื่อนจะยอมเปิดอ่านและตอบกลับ",
+            isCorrect: false
+          },
+          {
+            text: "กดบล็อกช่องทางการติดต่อของเพื่อนคนนั้นกลับทันทีเช่นกัน เพราะมองว่าเพื่อนไม่ให้เกียรติและไม่ยอมรับฟังความจริงจากเราก่อน",
+            isCorrect: false
+          }
+        ],
+        explanation: "การสื่อสารเรื่องละเอียดอ่อนผ่านตัวอักษรมักเกิดการตีความคลาดเคลื่อนได้ง่าย การพูดคุยแบบตัวต่อตัวหรือทางเสียงด้วยความรับฟัง (Active Listening) ช่วยคลี่คลายความเข้าใจผิดได้ดีที่สุด"
+      },
+      {
+        id: 9,
+        stage: 2,
+        stageName: "ด่านที่ 2: การจัดการอารมณ์และความสัมพันธ์",
+        location: "📍 บ้าน / ห้องนั่งเล่น",
+        icon: "🏠",
+        question: "คุณและผู้ปกครองมีความเห็นไม่ตรงกันอย่างรุนแรงเรื่องการเลือกคณะเรียนต่อ จนเริ่มมีการขึ้นเสียงใส่กัน คุณควรทำอย่างไรเพื่อคลี่คลายสถานการณ์?",
+        options: [
+          {
+            text: "ขออนุญาตพักการสนทนาชั่วคราวด้วยความเคารพ เพื่อไปรวบรวมข้อมูลหลักสูตรและแผนอาชีพให้ชัดเจน แล้วนัดพูดคุยกันใหม่ในวันรุ่งขึ้น",
+            isCorrect: true
+          },
+          {
+            text: "หยุดพูดทันทีแล้วเดินกลับเข้าห้องนอนพร้อมปิดประตูเสียงดัง เพื่อให้ผู้ปกครองรับรู้ถึงความรู้สึกอึดอัดและไม่พอใจอย่างมากของคุณ",
+            isCorrect: false
+          },
+          {
+            text: "พยายามอธิบายเหตุผลและยืนกรานความต้องการของตนเองเสียงดังต่อไปเรื่อย ๆ จนกว่าผู้ปกครองจะยอมรับการตัดสินใจของคุณในเดี๋ยวนั้น",
+            isCorrect: false
+          },
+          {
+            text: "ยอมรับปากเลือกคณะตามที่ผู้ปกครองต้องการไปก่อนเพื่อยุติการโต้เถียง แล้วค่อยแอบเข้าไปเปลี่ยนอันดับในระบบ TCAS ด้วยตนเองภายหลัง",
+            isCorrect: false
+          }
+        ],
+        explanation: "การใช้ Time-Out อย่างมีวุฒิภาวะช่วยลดอุณหภูมิทางอารมณ์ของทั้งสองฝ่าย ทำให้กลับมาเจรจาบนพื้นฐานของข้อมูลและความเข้าใจร่วมกันได้โดยไม่ทำลายความไว้วางใจในครอบครัว"
+      },
+      {
+        id: 10,
+        stage: 2,
+        stageName: "ด่านที่ 2: การจัดการอารมณ์และความสัมพันธ์",
+        location: "📍 ระเบียงอาคารเรียน",
+        icon: "🤝",
+        question: "เพื่อนร่วมห้องที่มีภาวะเครียดสะสมพูดกับคุณว่า 'ช่วงนี้เรานอนไม่หลับเลย รู้สึกเหมือนตัวเองไม่มีค่า ไม่อยากตื่นมาเจออะไรอีกแล้ว' พร้อมขอให้คุณเก็บเป็นความลับ คุณควรทำอย่างไร?",
+        options: [
+          {
+            text: "รับฟังด้วยความเห็นอกเห็นใจ อยู่เป็นเพื่อนไม่ปล่อยให้อยู่ลำพัง และอธิบายอย่างนุ่มนวลว่าจำเป็นต้องขอความช่วยเหลือจากครูแนะแนวร่วมกัน",
+            isCorrect: true
+          },
+          {
+            text: "รักษาคำสัญญาด้วยการไม่นำเรื่องนี้ไปบอกใครเด็ดขาด แต่คอยทักแชทไปให้กำลังใจและส่งคลิปตลกให้เพื่อนดูทุกวันเพื่อช่วยคลายเครียด",
+            isCorrect: false
+          },
+          {
+            text: "พูดปลอบใจให้เพื่อนมองโลกในแง่บวกว่า 'อย่าคิดมากเลย คนอื่นเขาลำบากกว่าเรายังสู้ได้ พักผ่อนเยอะ ๆ เดี๋ยวพรุ่งนี้ก็รู้สึกดีขึ้นเอง'",
+            isCorrect: false
+          },
+          {
+            text: "นำเรื่องราวของเพื่อนไปปรึกษาในแชทกลุ่มเพื่อนสนิททั้งหมดเพื่อช่วยกันระดมความคิดและหาวิธีปลอบใจเพื่อนพร้อมกันในวันพรุ่งนี้",
+            isCorrect: false
+          }
+        ],
+        explanation: "เมื่อมีความเสี่ยงต่อความปลอดภัยในชีวิต การส่งต่อผู้เชี่ยวชาญ (ครูแนะแนว ผู้ปกครอง หรือสายด่วน 1323) สำคัญกว่าการเก็บความลับ แต่ต้องทำด้วยความเคารพและไม่นำไปป่าวประกาศในกลุ่มเพื่อน"
+      },
+
+      // --- ด่านที่ 3: การตัดสินใจแก้ไขปัญหา ---
+      {
+        id: 11,
+        stage: 3,
+        stageName: "ด่านที่ 3: การตัดสินใจแก้ไขปัญหา",
+        location: "📍 สมาร์ตโฟน / อีเมลส่วนตัว",
+        icon: "📱",
+        question: "คุณได้รับอีเมลแจ้งเตือนจากบัญชีโซเชียลมีเดียหลักว่า 'ตรวจพบการเข้าสู่ระบบจากต่างประเทศ กรุณากดยืนยันตัวตนภายใน 15 นาที มิฉะนั้นบัญชีจะถูกลบถาวร' คุณควรทำอย่างไร?",
+        options: [
+          {
+            text: "ไม่คลิกลิงก์ในอีเมล แต่เปิดแอปพลิเคชันทางการโดยตรงเพื่อตรวจสอบประวัติการเข้าสู่ระบบและเปลี่ยนรหัสผ่านพร้อมเปิดระบบยืนยัน 2 ชั้น",
+            isCorrect: true
+          },
+          {
+            text: "รีบกดปุ่มยืนยันในอีเมลเพื่อกรอกรหัสผ่านเดิมและรหัส OTP ยืนยันความเป็นเจ้าของบัญชีให้ทันภายใน 15 นาทีก่อนบัญชีจะถูกลบถาวร",
+            isCorrect: false
+          },
+          {
+            text: "กดตอบกลับอีเมลฉบับนั้นทันทีเพื่อสอบถามเจ้าหน้าที่ฝ่ายบริการลูกค้าให้แน่ใจว่าเป็นอีเมลแจ้งเตือนจากระบบจริงหรือไม่ก่อนดำเนินการ",
+            isCorrect: false
+          },
+          {
+            text: "เพิกเฉยและกดลบอีเมลฉบับนั้นทิ้งทันทีโดยไม่ทำอะไรเพิ่มเติม เพราะมั่นใจว่าเป็นอีเมลสแปมหลอกลวงที่ส่งสุ่มมาเหมือนคนอื่นทั่วไป",
+            isCorrect: false
+          }
+        ],
+        explanation: "การตรวจสอบผ่านช่องทางทางการโดยตรง (Out-of-Band Verification) ป้องกันการถูกหลอกขโมยรหัสผ่านผ่านหน้าเว็บปลอม (Phishing) และช่วยให้ตั้งค่าความปลอดภัยบัญชีได้จริง"
+      },
+      {
+        id: 12,
+        stage: 3,
+        stageName: "ด่านที่ 3: การตัดสินใจแก้ไขปัญหา",
+        location: "📍 ห้องประชุมนำเสนอโครงงาน",
+        icon: "🎤",
+        question: "ขณะกำลังนำเสนอโครงงานรอบชิงชนะเลิศ เครื่องโปรเจกเตอร์เกิดดับกะทันหันและสไลด์ไม่ขึ้นจอ เหลือเวลาพูดอีกเพียง 4 นาที คณะกรรมการกำลังรอฟังอยู่ คุณควรแก้ปัญหาเฉพาะหน้าอย่างไร?",
+        options: [
+          {
+            text: "ขออนุญาตกรรมการพูดนำเสนอประเด็นสำคัญต่ออย่างมั่นใจโดยไม่ต้องพึ่งสไลด์ พร้อมยื่นเอกสารสรุปฉบับย่อที่เตรียมสำรองไว้ให้กรรมการดูประกอบ",
+            isCorrect: true
+          },
+          {
+            text: "หยุดการพูดนำเสนอทันทีและใช้เวลา 3 นาทีที่เหลือช่วยกันตรวจสอบปลั๊กไฟและถอดเสียบสายเชื่อมต่อโปรเจกเตอร์ใหม่จนกว่าภาพจะกลับมาติด",
+            isCorrect: false
+          },
+          {
+            text: "เปิดไฟล์สไลด์ในหน้าจอสมาร์ตโฟนของตนเองแล้วเดินเข้าไปยื่นจ่อให้คณะกรรมการทีละท่านดูประกอบการพูดบรรยายไปจนครบทุกคน",
+            isCorrect: false
+          },
+          {
+            text: "ขออนุญาตคณะกรรมการยุติการนำเสนอของกลุ่มไว้ชั่วคราวเพื่อขอไปต่อคิวนำเสนอใหม่เป็นลำดับสุดท้ายหลังจากแก้ไขอุปกรณ์เสร็จแล้ว",
+            isCorrect: false
+          }
+        ],
+        explanation: "ในสถานการณ์จำกัดเวลา ความสามารถในการสื่อสารเนื้อหาหลักโดยไม่ยึดติดกับสื่อประกอบ (Tech-Independent Delivery) และมีเอกสารสำรอง แสดงถึงความเข้าใจในงานอย่างแท้จริง"
+      },
+      {
+        id: 13,
+        stage: 3,
+        stageName: "ด่านที่ 3: การตัดสินใจแก้ไขปัญหา",
+        location: "📍 กลุ่มหางานพาร์ทไทม์ออนไลน์",
+        icon: "📄",
+        question: "คุณสมัครงานแอดมินตอบแชทร้านค้าออนไลน์ แอดมินแจ้งว่า 'ผ่านการคัดเลือกแล้ว ต้องโหลดแอปของบริษัทและโอนเงินเปิดรหัสพนักงาน 300 บาท ซึ่งจะได้คืนพร้อมค่าคอมฯ' คุณควรทำอย่างไร?",
+        options: [
+          {
+            text: "ยุติการติดต่อทันที ไม่ดาวน์โหลดแอปนอกสโตร์และไม่โอนเงินใด ๆ ทั้งสิ้น เพราะรูปแบบนี้คือกลโกงหลอกให้ทำภารกิจโอนเงินออนไลน์",
+            isCorrect: true
+          },
+          {
+            text: "ทดลองโอนเงินเปิดรหัส 300 บาทดูก่อนเพราะเป็นจำนวนเงินไม่มาก หากได้กำไรคืนตามที่แจ้งจริงค่อยทำต่อ แต่ถ้าไม่ได้ค่อยหยุดทำทันที",
+            isCorrect: false
+          },
+          {
+            text: "ขอดูรูปถ่ายบัตรประชาชนของแอดมินและเลขทะเบียนพาณิชย์ของร้านค้า เพื่อตรวจสอบความน่าเชื่อถือให้มั่นใจก่อนตัดสินใจโอนเงิน",
+            isCorrect: false
+          },
+          {
+            text: "ดาวน์โหลดแอปพลิเคชันมาติดตั้งเพื่อทดลองดูหน้าตาระบบการทำงานก่อน แต่จะยังไม่โอนเงินค่าเปิดรหัสจนกว่าจะมีลูกค้าทักเข้ามาจริง",
+            isCorrect: false
+          }
+        ],
+        explanation: "มิจฉาชีพมักใช้เงินจำนวนน้อย (เช่น 100-300 บาท) เป็นเหยื่อล่อให้เหยื่อตายใจ และอาจแอบอ้างบัตรประชาชนของผู้อื่น รวมถึงแอปนอกสโตร์อาจมีมัลแวร์ดูดเงินในบัญชีได้"
+      },
+      {
+        id: 14,
+        stage: 3,
+        stageName: "ด่านที่ 3: การตัดสินใจแก้ไขปัญหา",
+        location: "📍 ฟีดข่าวโซเชียลมีเดีย",
+        icon: "📰",
+        question: "มีอินฟลูเอนเซอร์ชื่อดังโพสต์แชร์สูตรเครื่องดื่มสมุนไพรที่อ้างว่า 'ดื่มติดต่อกัน 7 วัน ช่วยล้างสารพิษและป้องกันโรคมะเร็งได้ 100%' คุณควรประเมินข้อมูลนี้อย่างไร?",
+        options: [
+          {
+            text: "ตั้งข้อสงสัยต่อคำกล่าวอ้างที่เกินจริง และตรวจสอบข้อมูลงานวิจัยหรือคำเตือนจากหน่วยงานสาธารณสุขและ อย. ก่อนเชื่อหรือส่งต่อให้ผู้อื่น",
+            isCorrect: true
+          },
+          {
+            text: "เชื่อถือข้อมูลนี้ในระดับหนึ่งเนื่องจากอินฟลูเอนเซอร์มีผู้ติดตามหลายล้านคนและมีรีวิวจากผู้ใช้งานจริงในช่องคอมเมนต์เป็นจำนวนมาก",
+            isCorrect: false
+          },
+          {
+            text: "ส่งลิงก์โพสต์นี้เข้ากลุ่มไลน์ครอบครัวพร้อมพิมพ์ข้อความกำกับว่า 'ลองอ่านดูเผื่อมีประโยชน์' เพื่อช่วยแบ่งปันข้อมูลสุขภาพให้ญาติผู้ใหญ่",
+            isCorrect: false
+          },
+          {
+            text: "ทดลองซื้อวัตถุดิบมาต้มดื่มด้วยตนเองก่อน 7 วันเพื่อสังเกตผลลัพธ์กับร่างกายตัวเอง ก่อนที่จะตัดสินใจนำไปแนะนำให้คนรอบข้างทำตาม",
+            isCorrect: false
+          }
+        ],
+        explanation: "การรู้เท่าทันสื่อสุขภาพ (Health & Media Literacy) ต้องแยกแยะระหว่าง 'ความนิยมของผู้พูด' กับ 'หลักฐานทางวิทยาศาสตร์' คำอ้างที่การันตีผลลัพธ์ 100% มักเข้าข่ายโฆษณาเกินจริง"
+      },
+      {
+        id: 15,
+        stage: 3,
+        stageName: "ด่านที่ 3: การตัดสินใจแก้ไขปัญหา",
+        location: "📍 การทำรายงานเดี่ยวปลายภาค",
+        icon: "⚖️",
+        question: "คุณใช้ AI ช่วยสรุปข้อมูลและร่างโครงสร้างรายงานวิชาสังคมศึกษา แต่พบว่าข้อมูลสถิติบางส่วนที่ AI สร้างขึ้นไม่มีแหล่งอ้างอิงชัดเจน คุณควรดำเนินการอย่างไร?",
+        options: [
+          {
+            text: "ตรวจสอบตัวเลขสถิติทั้งหมดกับแหล่งข้อมูลปฐมภูมิที่น่าเชื่อถือ ตัดส่วนที่ยืนยันไม่ได้ออก และเรียบเรียงใหม่ด้วยสำนวนของตนเองพร้อมอ้างอิง",
+            isCorrect: true
+          },
+          {
+            text: "คัดลอกเนื้อหาและตัวเลขสถิติทั้งหมดที่ AI สร้างให้ไปใส่ในรายงานได้เลย เพราะ AI ประมวลผลมาจากฐานข้อมูลขนาดใหญ่ทั่วโลกอยู่แล้ว",
+            isCorrect: false
+          },
+          {
+            text: "ปรับแก้เฉพาะคำเชื่อมและจัดรูปแบบตัวอักษรให้ดูอ่านง่ายเป็นธรรมชาติ แล้วใส่ชื่อเว็บไซต์สารานุกรมทั่วไปต่อท้ายเป็นบรรณานุกรม",
+            isCorrect: false
+          },
+          {
+            text: "ลบส่วนที่ไม่มีแหล่งอ้างอิงออกทั้งหมดแล้วส่งรายงานตามความยาวที่เหลืออยู่ โดยไม่ต้องเสียเวลาค้นหาข้อมูลสถิติจากแหล่งอื่นมาทดแทน",
+            isCorrect: false
+          }
+        ],
+        explanation: "AI อาจสร้างข้อมูลที่คลาดเคลื่อน (Hallucination) การใช้ AI อย่างมีจริยธรรมและรู้เท่าทัน (AI Literacy) คือการใช้เป็นเครื่องมือช่วยคิด แต่ผู้เรียนต้องตรวจสอบความถูกต้องและรับผิดชอบต่อผลงานเสมอ"
+      }
+    ];
+
+    /**
+     * ============================================================================
+     * ส่วนที่ 2: ระบบเสียงเอฟเฟกต์แบบ Offline (WEB AUDIO API SYNTHESIZER)
+     * ============================================================================
+     */
+    class SoundEngine {
+      constructor() {
+        this.enabled = true;
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type, duration, startTimeOffset = 0, volume = 0.15) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime + startTimeOffset;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + duration);
+      }
+
+      playClick() {
+        this.playTone(520, 'sine', 0.08, 0, 0.12);
+      }
+
+      playCardDeal() {
+        this.playTone(380, 'triangle', 0.1, 0, 0.1);
+        this.playTone(580, 'triangle', 0.12, 0.06, 0.1);
+      }
+
+      playCorrect() {
+        this.playTone(523.25, 'sine', 0.15, 0, 0.18);
+        this.playTone(659.25, 'sine', 0.15, 0.1, 0.18);
+        this.playTone(783.99, 'sine', 0.28, 0.2, 0.2);
+      }
+
+      playWrong() {
+        this.playTone(260, 'sawtooth', 0.2, 0, 0.12);
+        this.playTone(195, 'sawtooth', 0.3, 0.15, 0.12);
+      }
+
+      playTick() {
+        this.playTone(880, 'sine', 0.05, 0, 0.06);
+      }
+
+      playVictory() {
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((n, idx) => {
+          this.playTone(n, 'triangle', 0.25, idx * 0.11, 0.18);
+        });
+      }
+    }
+
+    const sfx = new SoundEngine();
+
+    /**
+     * ============================================================================
+     * ส่วนที่ 3: การจัดการข้อมูลสถิติใน LocalStorage (PERSISTENT STORAGE)
+     * ============================================================================
+     */
+    const STORAGE_KEY = 'life_decision_gbl_stats_v3';
+
+    function loadStats() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {
+        console.warn('LocalStorage unavailable:', e);
+      }
+      return {
+        highScore: 0,
+        totalCoins: 0,
+        gamesPlayed: 0,
+        wins: 0,
+        lastResult: null
+      };
+    }
+
+    function saveStats(stats) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+      } catch (e) {
+        console.warn('LocalStorage save failed:', e);
+      }
+    }
+
+    /**
+     * ============================================================================
+     * ส่วนที่ 4: สถานะและตรรกะหลักของเกม (GAME STATE & CONTROLLER)
+     * ============================================================================
+     */
+    const GAME_CONFIG = {
+      totalQuestions: 10,
+      pointsPerQuestion: 10,
+      timeLimitSeconds: 25,
+      winThreshold: 80
+    };
+
+    let state = {
+      deck: [],
+      currentIndex: 0,
+      currentShuffledOptions: [],
+      score: 0,
+      timeLeft: 25,
+      timerId: null,
+      isAnswered: false,
+      history: []
+    };
+
+    const screens = {
+      start: document.getElementById('screenStart'),
+      game: document.getElementById('screenGame'),
+      result: document.getElementById('screenResult')
+    };
+
+    function showScreen(screenName) {
+      Object.values(screens).forEach(el => el.classList.remove('active'));
+      screens[screenName].classList.add('active');
+    }
+
+    // สุ่มแบบ Fisher-Yates Shuffle
+    function fisherYatesShuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function buildShuffledDeck() {
+      const s1 = fisherYatesShuffle(QUESTION_BANK.filter(q => q.stage === 1)).slice(0, 3);
+      const s2 = fisherYatesShuffle(QUESTION_BANK.filter(q => q.stage === 2)).slice(0, 3);
+      const s3 = fisherYatesShuffle(QUESTION_BANK.filter(q => q.stage === 3)).slice(0, 4);
+      return [...s1, ...s2, ...s3];
+    }
+
+    function refreshStartScreenStats() {
+      const stats = loadStats();
+      document.getElementById('startHighScore').textContent = `${stats.highScore} / 100`;
+      document.getElementById('startTotalCoins').textContent = `${stats.totalCoins} เหรียญ`;
+      document.getElementById('startWins').textContent = `${stats.wins} ครั้ง`;
+    }
+
+    function startNewGame() {
+      sfx.playClick();
+      state.deck = buildShuffledDeck();
+      state.currentIndex = 0;
+      state.score = 0;
+      state.history = [];
+      state.isAnswered = false;
+
+      showScreen('game');
+      renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+      clearInterval(state.timerId);
+      state.isAnswered = false;
+      state.timeLeft = GAME_CONFIG.timeLimitSeconds;
+
+      const q = state.deck[state.currentIndex];
+      const qNum = state.currentIndex + 1;
+
+      // สุ่มสลับตำแหน่งตัวเลือก 4 ข้อ (ก, ข, ค, ง) ทุกครั้งที่แสดงโจทย์
+      state.currentShuffledOptions = fisherYatesShuffle(q.options);
+
+      document.getElementById('hudQuestionNum').textContent = qNum;
+      document.getElementById('hudScore').textContent = state.score;
+      document.getElementById('progressFill').style.width = `${(qNum / GAME_CONFIG.totalQuestions) * 100}%`;
+
+      const cardEl = document.getElementById('scenarioCard');
+      cardEl.classList.remove('card-flip-anim');
+      void cardEl.offsetWidth;
+      cardEl.classList.add('card-flip-anim');
+      sfx.playCardDeal();
+
+      document.getElementById('cardStageBadge').textContent = q.stageName;
+      document.getElementById('cardLocationBadge').textContent = q.location;
+      document.getElementById('cardIcon').textContent = q.icon;
+      document.getElementById('cardQuestionText').textContent = q.question;
+
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+      const prefixes = ['ก', 'ข', 'ค', 'ง'];
+
+      state.currentShuffledOptions.forEach((optObj, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        btn.innerHTML = `
+          <span class="option-prefix">${prefixes[idx]}</span>
+          <span>${optObj.text}</span>
+        `;
+        btn.addEventListener('click', () => handleAnswer(idx));
+        optionsContainer.appendChild(btn);
+      });
+
+      const feedbackPanel = document.getElementById('feedbackPanel');
+      feedbackPanel.className = 'feedback-panel';
+
+      updateTimerDisplay();
+      state.timerId = setInterval(() => {
+        state.timeLeft--;
+        updateTimerDisplay();
+
+        if (state.timeLeft <= 5 && state.timeLeft > 0) {
+          sfx.playTick();
+        }
+
+        if (state.timeLeft <= 0) {
+          clearInterval(state.timerId);
+          handleTimeout();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById('hudTimer');
+      timerEl.textContent = `⏱️ ${state.timeLeft} วิ`;
+      if (state.timeLeft <= 6) {
+        timerEl.classList.add('warning');
+      } else {
+        timerEl.classList.remove('warning');
+      }
+    }
+
+    function handleAnswer(selectedIndex) {
+      if (state.isAnswered) return;
+      state.isAnswered = true;
+      clearInterval(state.timerId);
+
+      const q = state.deck[state.currentIndex];
+      const chosenOption = state.currentShuffledOptions[selectedIndex];
+      const correctOption = state.currentShuffledOptions.find(o => o.isCorrect);
+      const isCorrect = chosenOption.isCorrect;
+      const optionBtns = document.querySelectorAll('.option-btn');
+
+      optionBtns.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (state.currentShuffledOptions[idx].isCorrect) {
+          btn.classList.add('correct');
+        } else if (idx === selectedIndex && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      if (isCorrect) {
+        state.score += GAME_CONFIG.pointsPerQuestion;
+        document.getElementById('hudScore').textContent = state.score;
+        sfx.playCorrect();
+      } else {
+        sfx.playWrong();
+      }
+
+      state.history.push({
+        question: q.question,
+        stage: q.stage,
+        stageName: q.stageName,
+        isCorrect: isCorrect,
+        userAnswer: chosenOption.text,
+        correctAnswer: correctOption.text,
+        explanation: q.explanation
+      });
+
+      showFeedbackPanel(isCorrect, false, correctOption.text, q.explanation);
+    }
+
+    function handleTimeout() {
+      if (state.isAnswered) return;
+      state.isAnswered = true;
+      sfx.playWrong();
+
+      const q = state.deck[state.currentIndex];
+      const correctOption = state.currentShuffledOptions.find(o => o.isCorrect);
+      const optionBtns = document.querySelectorAll('.option-btn');
+
+      optionBtns.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (state.currentShuffledOptions[idx].isCorrect) {
+          btn.classList.add('correct');
+        }
+      });
+
+      state.history.push({
+        question: q.question,
+        stage: q.stage,
+        stageName: q.stageName,
+        isCorrect: false,
+        userAnswer: '⏰ หมดเวลาตัดสินใจ',
+        correctAnswer: correctOption.text,
+        explanation: q.explanation
+      });
+
+      showFeedbackPanel(false, true, correctOption.text, q.explanation);
+    }
+
+    function showFeedbackPanel(isCorrect, isTimeout, correctText, explanationText) {
+      const panel = document.getElementById('feedbackPanel');
+      const titleEl = document.getElementById('feedbackTitle');
+      const descEl = document.getElementById('feedbackDesc');
+      const nextBtn = document.getElementById('btnNextQuestion');
+
+      panel.className = 'feedback-panel show ' + (isCorrect ? 'is-correct' : 'is-wrong');
+
+      if (isCorrect) {
+        titleEl.innerHTML = '✅ ยอดเยี่ยม! วิเคราะห์สถานการณ์ได้เฉียบคม (+10 คะแนน)';
+      } else if (isTimeout) {
+        titleEl.innerHTML = '⏰ หมดเวลา! ในชีวิตจริงการตัดสินใจช้าอาจทำให้เสียโอกาส';
+      } else {
+        titleEl.innerHTML = '💡 ตัวเลือกนี้ยังมีจุดอ่อน ลองดูแนวทางที่รอบคอบกว่า!';
+      }
+
+      descEl.innerHTML = `
+        <strong>แนวทางที่เหมาะสมที่สุด:</strong> ${correctText}<br>
+        <strong>หลักคิดวิเคราะห์:</strong> ${explanationText}
+      `;
+
+      nextBtn.textContent = (state.currentIndex + 1 < GAME_CONFIG.totalQuestions)
+        ? 'การ์ดสถานการณ์ถัดไป ➡️'
+        : 'ดูผลสรุปและ Dashboard การเรียนรู้ 🏆';
+    }
+
+    function handleNextStep() {
+      sfx.playClick();
+      if (state.currentIndex + 1 < GAME_CONFIG.totalQuestions) {
+        state.currentIndex++;
+        renderCurrentQuestion();
+      } else {
+        finishGame();
+      }
+    }
+
+    function finishGame() {
+      const isWin = state.score >= GAME_CONFIG.winThreshold;
+      const accuracy = Math.round((state.score / 100) * 100);
+      const coinsEarned = state.score;
+
+      if (isWin) {
+        sfx.playVictory();
+      } else {
+        sfx.playWrong();
+      }
+
+      const stats = loadStats();
+      stats.gamesPlayed += 1;
+      stats.totalCoins += coinsEarned;
+      if (state.score > stats.highScore) stats.highScore = state.score;
+      if (isWin) stats.wins += 1;
+
+      stats.lastResult = {
+        score: state.score,
+        accuracy: accuracy,
+        coinsEarned: coinsEarned,
+        isWin: isWin,
+        history: state.history
+      };
+      saveStats(stats);
+
+      renderDashboard(stats.lastResult, stats);
+      showScreen('result');
+    }
+
+    function renderDashboard(resultData, allStats) {
+      const { score, accuracy, coinsEarned, isWin, history } = resultData;
+
+      const statusTitle = document.getElementById('resultStatusTitle');
+      const starsEl = document.getElementById('resultStars');
+      const badgeEl = document.getElementById('resultBadge');
+
+      if (score === 100) {
+        statusTitle.textContent = '🏆 สมบูรณ์แบบ! คุณคือสุดยอดนักคิดวิเคราะห์พิชิตชีวิต';
+        starsEl.textContent = '⭐⭐⭐';
+        badgeEl.textContent = '🎖️ ตราประทับ: ปรมาจารย์ทักษะชีวิต (Master of Life)';
+      } else if (isWin) {
+        statusTitle.textContent = '🎉 ยินดีด้วย! คุณผ่านเกณฑ์พิชิตภารกิจสำเร็จ';
+        starsEl.textContent = '⭐⭐⭐';
+        badgeEl.textContent = '🏅 ตราประทับ: นักวางแผนชีวิตมือโปร (80+ คะแนน)';
+      } else if (score >= 50) {
+        statusTitle.textContent = '💪 เกือบผ่านแล้ว! อีกนิดเดียวจะพิชิตภารกิจได้สำเร็จ';
+        starsEl.textContent = '⭐⭐☆';
+        badgeEl.textContent = '📘 ตราประทับ: นักเรียนรู้ผู้มุ่งมั่น (ต้องได้ 80+ เพื่อผ่านด่าน)';
+      } else {
+        statusTitle.textContent = '🌱 เริ่มต้นได้ดี! ทบทวนหลักคิดแล้วลองท้าทายใหม่อีกครั้ง';
+        starsEl.textContent = '⭐☆☆';
+        badgeEl.textContent = '🧭 ตราประทับ: ผู้เริ่มต้นออกเดินทาง';
+      }
+
+      document.getElementById('resultScore').textContent = score;
+      document.getElementById('resultAccuracy').textContent = `${accuracy}%`;
+      document.getElementById('resultCoinsEarned').textContent = `+${coinsEarned} เหรียญทอง`;
+
+      document.getElementById('dashTotalGames').textContent = allStats.gamesPlayed;
+      document.getElementById('dashBestScore').textContent = `${allStats.highScore} / 100`;
+      document.getElementById('dashTotalCoins').textContent = `${allStats.totalCoins} เหรียญ`;
+      const winRate = allStats.gamesPlayed > 0
+        ? Math.round((allStats.wins / allStats.gamesPlayed) * 100)
+        : 0;
+      document.getElementById('dashWinRate').textContent = `${winRate}%`;
+
+      const stageMeta = [
+        { id: 1, name: '💰 การบริหารเงินและเวลา' },
+        { id: 2, name: '💛 อารมณ์และความสัมพันธ์' },
+        { id: 3, name: '🧠 การตัดสินใจแก้ปัญหา' }
+      ];
+
+      const breakdownContainer = document.getElementById('skillBreakdownContainer');
+      breakdownContainer.innerHTML = '';
+      let weakestStages = [];
+
+      stageMeta.forEach(st => {
+        const items = history.filter(h => h.stage === st.id);
+        const correctCount = items.filter(h => h.isCorrect).length;
+        const totalCount = items.length || 1;
+        const pct = Math.round((correctCount / totalCount) * 100);
+
+        if (pct < 80) {
+          weakestStages.push({ name: st.name, pct });
+        }
+
+        breakdownContainer.innerHTML += `
+          <div class="skill-bar-row">
+            <div class="skill-bar-label">
+              <span>${st.name}</span>
+              <span>${correctCount}/${totalCount} ข้อ (${pct}%)</span>
+            </div>
+            <div class="skill-bar-bg">
+              <div class="skill-bar-fill" style="width: ${pct}%; background: ${pct >= 80 ? '#16a34a' : '#0284c7'};"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      const adviceEl = document.getElementById('personalAdviceText');
+      if (weakestStages.length === 0) {
+        adviceEl.textContent = 'คุณมีทักษะการคิดวิเคราะห์ การบริหารจัดการตนเอง และการรู้เท่าทันสื่อดิจิทัลในระดับดีเยี่ยมทุกด้าน สามารถนำหลักคิดนี้ไปประยุกต์ใช้ในการเตรียมตัวเข้าสู่มหาวิทยาลัยและชีวิตวัยผู้ใหญ่ได้อย่างมั่นใจ!';
+      } else {
+        const weakNames = weakestStages.map(w => w.name).join(' และ ');
+        adviceEl.innerHTML = `จากการวิเคราะห์ผลการตัดสินใจ จุดที่คุณควรฝึกฝนเพิ่มเติมคือ <strong>${weakNames}</strong> แนะนำให้สังเกตตัวเลือกที่ดูเผิน ๆ เหมือนจะดีแต่แฝงความเสี่ยงระยะยาว และฝึกประเมินผลกระทบให้รอบด้านภายใต้เวลาจำกัด`;
+      }
+
+      const reviewContainer = document.getElementById('reviewListContainer');
+      reviewContainer.innerHTML = '';
+      history.forEach((item, idx) => {
+        reviewContainer.innerHTML += `
+          <div class="review-item">
+            <div style="font-weight: 700; color: ${item.isCorrect ? '#16a34a' : '#dc2626'};">
+              ${item.isCorrect ? '✅' : '❌'} ข้อที่ ${idx + 1}: ${item.question}
+            </div>
+            <div style="color: #475569; margin-top: 4px;">
+              คำตอบของคุณ: <strong>${item.userAnswer}</strong>
+              ${!item.isCorrect ? `<br><span style="color: #0369a1;">แนวทางที่เหมาะสม: ${item.correctAnswer}</span>` : ''}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    /**
+     * ============================================================================
+     * ส่วนที่ 5: การผูกเหตุการณ์ปุ่มกด (EVENT LISTENERS)
+     * ============================================================================
+     */
+    document.getElementById('btnStartGame').addEventListener('click', startNewGame);
+    document.getElementById('btnNextQuestion').addEventListener('click', handleNextStep);
+    document.getElementById('btnPlayAgain').addEventListener('click', startNewGame);
+
+    document.getElementById('btnBackHome').addEventListener('click', () => {
+      sfx.playClick();
+      clearInterval(state.timerId);
+      refreshStartScreenStats();
+      showScreen('start');
+    });
+
+    document.getElementById('btnSoundToggle').addEventListener('click', (e) => {
+      sfx.enabled = !sfx.enabled;
+      e.currentTarget.textContent = sfx.enabled ? '🔊 เปิดเสียง' : '🔇 ปิดเสียง';
+      if (sfx.enabled) sfx.playClick();
+    });
+
+    document.getElementById('btnDashboardNav').addEventListener('click', () => {
+      sfx.playClick();
+      clearInterval(state.timerId);
+      const stats = loadStats();
+      if (stats.lastResult) {
+        renderDashboard(stats.lastResult, stats);
+        showScreen('result');
+      } else {
+        alert('ยังไม่มีประวัติการเล่น ลองกด "เริ่มภารกิจตัดสินใจ" เพื่อบันทึกสถิติการเรียนรู้รอบแรกของคุณ!');
+      }
+    });
+
+    refreshStartScreenStats();
+  </script>
+</body>
+</html>
